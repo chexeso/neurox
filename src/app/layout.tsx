@@ -8,8 +8,10 @@ import { site } from "@/lib/site";
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin", "latin-ext"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
-  metadataBase: new URL(site.url),
+  metadataBase: new URL(site.url || "http://localhost:3000"),
   title: { default: "NeuroX — AI tools & digital subscriptions", template: "%s · NeuroX" },
   description: site.description,
   openGraph: {
