@@ -38,6 +38,14 @@ function fileToDataUrl(file: File): Promise<string> {
   });
 }
 
+function pickVariant(variants: Variant[] | undefined, days: number, labelPart: string) {
+  if (!variants?.length) return null;
+  const byDays = variants.find((v) => v.durationDays === days);
+  if (byDays) return byDays;
+  const byLabel = variants.find((v) => v.durationLabel.toLowerCase().includes(labelPart));
+  return byLabel || null;
+}
+
 export function ProductForm({
   product,
   categories,
@@ -53,14 +61,19 @@ export function ProductForm({
   const [categoryId, setCategoryId] = useState(product?.categoryId || categories[0]?.id || "");
   const [status, setStatus] = useState(product?.status || "DRAFT");
 
+  const v1 = pickVariant(product?.variants, 30, "1 мес") || product?.variants?.[0];
+  const v12 =
+    pickVariant(product?.variants, 365, "12") ||
+    pickVariant(product?.variants, 360, "12") ||
+    product?.variants?.find((v) => v.id !== v1?.id) ||
+    null;
+
   async function upload(file: File) {
     setError("");
     setUploading(true);
     try {
-      // Instant local preview
       const local = await fileToDataUrl(file);
       setImage(local);
-
       const data = new FormData();
       data.append("file", file);
       const res = await fetch("/api/admin/upload", {
@@ -69,12 +82,7 @@ export function ProductForm({
         credentials: "same-origin",
       });
       const json = await res.json().catch(() => ({}));
-      if (res.ok && json.url) {
-        setImage(json.url);
-      } else if (!res.ok) {
-        // keep local data-url preview so save still works
-        console.warn("upload api:", json.error);
-      }
+      if (res.ok && json.url) setImage(json.url);
     } catch {
       setError("Не удалось прочитать файл");
     } finally {
@@ -103,10 +111,24 @@ export function ProductForm({
         previewImage: image,
         seoTitle: form.get("seoTitle"),
         seoDescription: form.get("seoDescription"),
-        priceRubles: Number(form.get("priceRubles")),
-        compareRubles: Number(form.get("compareRubles") || 0) || null,
-        durationLabel: form.get("durationLabel"),
-        sku: form.get("sku"),
+        variants: [
+          {
+            id: v1?.id,
+            durationLabel: "1 месяц",
+            durationDays: 30,
+            priceRubles: Number(form.get("price1") || 0),
+            compareRubles: Number(form.get("compare1") || 0) || null,
+            sku: String(form.get("sku1") || ""),
+          },
+          {
+            id: v12?.id,
+            durationLabel: "12 месяцев",
+            durationDays: 365,
+            priceRubles: Number(form.get("price12") || 0),
+            compareRubles: Number(form.get("compare12") || 0) || null,
+            sku: String(form.get("sku12") || ""),
+          },
+        ],
       }),
     });
     const data = await res.json().catch(() => ({}));
@@ -115,8 +137,10 @@ export function ProductForm({
     router.refresh();
   }
 
-  const priceRub = product?.variants[0] ? Math.round(product.variants[0].priceCents / 100) : 3490;
-  const compareRub = product?.variants[0]?.compareCents ? Math.round(product.variants[0].compareCents / 100) : 0;
+  const price1 = v1 ? Math.round(v1.priceCents / 100) : 3490;
+  const compare1 = v1?.compareCents ? Math.round(v1.compareCents / 100) : 0;
+  const price12 = v12 ? Math.round(v12.priceCents / 100) : 24990;
+  const compare12 = v12?.compareCents ? Math.round(v12.compareCents / 100) : 0;
 
   return (
     <form onSubmit={onSubmit} className="card mt-6 grid max-w-2xl gap-4 p-6">
@@ -137,7 +161,6 @@ export function ProductForm({
         <input name="slug" className="field mt-1" defaultValue={product?.slug} placeholder="grok-heavy" required />
       </label>
 
-      {/* Cover upload */}
       <div className="rounded-2xl border border-[color:var(--line)] bg-[color:var(--bg-mute)]/40 p-4">
         <p className="text-sm font-medium">Фото товара</p>
         <div
@@ -179,20 +202,50 @@ export function ProductForm({
             </button>
           )}
         </div>
-        <p className="mt-2 text-xs text-[color:var(--fg-mute)]">JPG, PNG, WebP или GIF до 6 МБ</p>
       </div>
 
-      {/* Category — custom styled */}
+      {/* Prices: 1 month + 12 months */}
+      <div className="rounded-2xl border border-[color:var(--line)] p-4">
+        <p className="text-sm font-semibold">Тариф: 1 месяц</p>
+        <div className="mt-3 grid gap-3 sm:grid-cols-3">
+          <label className="text-sm">
+            Цена, ₽
+            <input name="price1" className="field mt-1" type="number" min={1} defaultValue={price1} required />
+          </label>
+          <label className="text-sm">
+            Старая цена, ₽
+            <input name="compare1" className="field mt-1" type="number" min={0} defaultValue={compare1} />
+          </label>
+          <label className="text-sm">
+            Артикул
+            <input name="sku1" className="field mt-1" defaultValue={v1?.sku || ""} placeholder="NX-1M" />
+          </label>
+        </div>
+      </div>
+
+      <div className="rounded-2xl border border-[color:var(--line)] p-4">
+        <p className="text-sm font-semibold">Тариф: 12 месяцев</p>
+        <div className="mt-3 grid gap-3 sm:grid-cols-3">
+          <label className="text-sm">
+            Цена, ₽
+            <input name="price12" className="field mt-1" type="number" min={0} defaultValue={price12} />
+          </label>
+          <label className="text-sm">
+            Старая цена, ₽
+            <input name="compare12" className="field mt-1" type="number" min={0} defaultValue={compare12} />
+          </label>
+          <label className="text-sm">
+            Артикул
+            <input name="sku12" className="field mt-1" defaultValue={v12?.sku || ""} placeholder="NX-12M" />
+          </label>
+        </div>
+        <p className="mt-2 text-xs text-[color:var(--fg-mute)]">Если цену 12 мес поставить 0 — тариф на сайте можно скрыть логикой витрины позже.</p>
+      </div>
+
       <label className="text-sm">
         Категория
         <div className="admin-select mt-1">
-          <select
-            className="admin-select-el"
-            value={categoryId}
-            onChange={(e) => setCategoryId(e.target.value)}
-            required
-          >
-            {categories.length === 0 && <option value="">Нет категорий</option>}
+          <select className="admin-select-el" value={categoryId} onChange={(e) => setCategoryId(e.target.value)} required>
             {categories.map((c) => (
               <option key={c.id} value={c.id}>
                 {c.name}
@@ -222,22 +275,6 @@ export function ProductForm({
       <label className="text-sm">
         Метка
         <input name="badge" className="field mt-1" defaultValue={product?.badge || ""} placeholder="Хит, Новинка" />
-      </label>
-      <label className="text-sm">
-        Цена, ₽
-        <input name="priceRubles" className="field mt-1" type="number" min={1} defaultValue={priceRub} required />
-      </label>
-      <label className="text-sm">
-        Старая цена, ₽
-        <input name="compareRubles" className="field mt-1" type="number" min={0} defaultValue={compareRub} />
-      </label>
-      <label className="text-sm">
-        Срок
-        <input name="durationLabel" className="field mt-1" defaultValue={product?.variants[0]?.durationLabel || "1 месяц"} />
-      </label>
-      <label className="text-sm">
-        Артикул
-        <input name="sku" className="field mt-1" defaultValue={product?.variants[0]?.sku || ""} />
       </label>
       <label className="text-sm">
         SEO заголовок
