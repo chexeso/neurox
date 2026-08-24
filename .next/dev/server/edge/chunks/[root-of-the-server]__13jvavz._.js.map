@@ -1,6 +1,0 @@
-{
-  "version": 3,
-  "sources": [],
-  "sections": [
-    {"offset": {"line": 16, "column": 0}, "map": {"version":3,"sources":["file:///C:/Users/spusk/OneDrive/Desktop/%D0%9D%D0%95%D0%99%D0%A0%D0%9E/neurox-app/src/middleware.ts"],"sourcesContent":["import { NextResponse } from \"next/server\";\nimport type { NextRequest } from \"next/server\";\n\nexport function middleware(req: NextRequest) {\n  const res = NextResponse.next();\n  res.headers.set(\"X-Frame-Options\", \"DENY\");\n  res.headers.set(\"X-Content-Type-Options\", \"nosniff\");\n  res.headers.set(\"Referrer-Policy\", \"strict-origin-when-cross-origin\");\n  res.headers.set(\"Permissions-Policy\", \"camera=(), microphone=(), geolocation=()\");\n  return res;\n}\n\nexport const config = {\n  matcher: [\"/((?!_next/static|_next/image|favicon.ico).*)\"],\n};\n"],"names":["middleware","req","res","next","headers","set","config","matcher"],"mappings":";;;;;;AAAA;AAAA;;AAGO,SAASA,WAAWC,GAAgB;IACzC,MAAMC,MAAM,6MAAY,CAACC,IAAI;IAC7BD,IAAIE,OAAO,CAACC,GAAG,CAAC,mBAAmB;IACnCH,IAAIE,OAAO,CAACC,GAAG,CAAC,0BAA0B;IAC1CH,IAAIE,OAAO,CAACC,GAAG,CAAC,mBAAmB;IACnCH,IAAIE,OAAO,CAACC,GAAG,CAAC,sBAAsB;IACtC,OAAOH;AACT;AAEO,MAAMI,SAAS;IACpBC,SAAS;QAAC;KAAgD;AAC5D"}}]
-}
