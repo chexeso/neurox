@@ -14,11 +14,12 @@ export function Header({ cartCount = 0, userName }: { cartCount?: number; userNa
   const t = useT();
 
   const nav = [
-    { href: "/products", label: t.nav_catalog },
-    { href: "/products?featured=1", label: t.nav_popular },
-    { href: "/#how", label: t.nav_how },
-    { href: "/#faq", label: t.nav_faq },
-    { href: "/support", label: t.nav_support },
+    { href: "/products", label: t.nav_catalog, ext: false },
+    { href: "/products?featured=1", label: t.nav_popular, ext: false },
+    { href: "/#how", label: t.nav_how, ext: false },
+    { href: "/#faq", label: t.nav_faq, ext: false },
+    { href: "/support", label: t.nav_support, ext: false },
+    { href: "https://t.me/neuroxstore", label: "Канал", ext: true },
   ];
 
   useEffect(() => {
@@ -35,11 +36,17 @@ export function Header({ cartCount = 0, userName }: { cartCount?: number; userNa
           <Logo />
         </Link>
         <nav className="hidden items-center gap-4 text-sm text-[color:var(--fg-mute)] lg:flex">
-          {nav.map((item) => (
-            <Link key={item.href} href={item.href} className="hover:text-[color:var(--fg)]">
-              {item.label}
-            </Link>
-          ))}
+          {nav.map((item) =>
+            item.ext ? (
+              <a key={item.href} href={item.href} target="_blank" rel="noreferrer" className="hover:text-[color:var(--fg)]">
+                {item.label}
+              </a>
+            ) : (
+              <Link key={item.href} href={item.href} className="hover:text-[color:var(--fg)]">
+                {item.label}
+              </Link>
+            )
+          )}
         </nav>
         <div className="ml-auto flex items-center gap-2">
           <div className="hidden md:block">
@@ -60,11 +67,17 @@ export function Header({ cartCount = 0, userName }: { cartCount?: number; userNa
           <div className="container-nx flex flex-col gap-3 py-4">
             <SearchBox placeholder={t.search_placeholder} />
             <ThemeLangSwitch />
-            {nav.map((item) => (
-              <Link key={item.href} href={item.href} onClick={() => setOpen(false)}>
-                {item.label}
-              </Link>
-            ))}
+            {nav.map((item) =>
+              item.ext ? (
+                <a key={item.href} href={item.href} target="_blank" rel="noreferrer" onClick={() => setOpen(false)}>
+                  {item.label}
+                </a>
+              ) : (
+                <Link key={item.href} href={item.href} onClick={() => setOpen(false)}>
+                  {item.label}
+                </Link>
+              )
+            )}
             <Link href="/account" onClick={() => setOpen(false)}>
               {t.account}
             </Link>
