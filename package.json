@@ -4,12 +4,14 @@
   "private": true,
   "scripts": {
     "dev": "next dev --hostname 0.0.0.0 --port 3000",
-    "build": "next build",
-    "start": "next start --hostname 0.0.0.0 --port 3000",
+    "build": "prisma generate && next build",
+    "start": "next start --hostname 0.0.0.0",
     "lint": "eslint",
     "db:push": "prisma db push",
     "db:seed": "tsx prisma/seed.ts",
-    "db:setup": "prisma generate && prisma db push && tsx prisma/seed.ts"
+    "db:setup": "prisma generate && prisma db push && tsx prisma/seed.ts",
+    "postinstall": "prisma generate || true",
+    "railway": "prisma db push && tsx prisma/seed.ts && next start --hostname 0.0.0.0 --port ${PORT:-3000}"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
@@ -21,7 +23,9 @@
     "next-themes": "^0.4.6",
     "react": "19.2.8",
     "react-dom": "19.2.8",
-    "zod": "^4.0.17"
+    "zod": "^4.0.17",
+    "prisma": "^6.14.0",
+    "tsx": "^4.20.5"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
@@ -31,9 +35,10 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.3.2",
-    "prisma": "^6.14.0",
     "tailwindcss": "^4",
-    "tsx": "^4.20.5",
     "typescript": "^5"
+  },
+  "engines": {
+    "node": ">=20.9.0"
   }
 }
