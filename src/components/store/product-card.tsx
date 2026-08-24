@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { discountPercent, formatMoney } from "@/lib/utils";
 import { AddToCartButton } from "./add-to-cart-button";
+import { ProductTilt } from "./product-tilt";
 
 export type CardProduct = {
   name: string;
@@ -15,10 +16,13 @@ export type CardProduct = {
 };
 
 export function ProductCard({ product }: { product: CardProduct }) {
-  const v = product.variants[0];
+  const v = [...product.variants]
+    .filter((x) => x.priceCents > 0)
+    .sort((a, b) => a.priceCents - b.priceCents)[0];
   if (!v) return null;
   const off = discountPercent(v.priceCents, v.compareCents);
   return (
+    <ProductTilt>
     <article className="product-glass group overflow-hidden">
       <Link href={`/product/${product.slug}`} className="block">
         <div className="relative aspect-[16/10] overflow-hidden bg-white/10">
@@ -56,5 +60,6 @@ export function ProductCard({ product }: { product: CardProduct }) {
         </div>
       </div>
     </article>
+    </ProductTilt>
   );
 }

@@ -6,6 +6,7 @@ import { ProductCard } from "@/components/store/product-card";
 import { VariantPicker } from "@/components/store/variant-picker";
 import type { Metadata } from "next";
 import { site } from "@/lib/site";
+import { PayBadges } from "@/components/store/wow-blocks";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
@@ -44,10 +45,13 @@ export default async function ProductPage({
   });
   if (!product || product.status !== "PUBLISHED") notFound();
 
+  const saleVariants = product.variants.filter((v) => v.priceCents > 0);
+  if (!saleVariants.length) notFound();
+
   const variant =
-    product.variants.find((v) => v.slug === variantSlug) ||
-    product.variants.find((v) => v.isDefault) ||
-    product.variants[0];
+    saleVariants.find((v) => v.slug === variantSlug) ||
+    saleVariants.find((v) => v.isDefault) ||
+    saleVariants[0];
   const off = discountPercent(variant.priceCents, variant.compareCents);
   const features = safeJson<string[]>(product.features, []);
   const includes = safeJson<string[]>(product.includes, []);
@@ -97,7 +101,7 @@ export default async function ProductPage({
             {product.badge && <span className="badge">{product.badge}</span>}
           </div>
           <div className="mt-6">
-            <VariantPicker productSlug={product.slug} variants={product.variants} current={variant.slug} />
+            <VariantPicker productSlug={product.slug} variants={saleVariants} current={variant.slug} />
           </div>
           <div className="mt-6 flex items-end gap-3">
             <div className="text-3xl font-semibold">{formatMoney(variant.priceCents, variant.currency)}</div>
@@ -109,8 +113,9 @@ export default async function ProductPage({
             <AddToCartButton variantId={variant.id} label="В корзину" />
             <AddToCartButton variantId={variant.id} label="Купить сейчас" buyNow />
           </div>
+          <PayBadges />
           <p className="mt-4 text-xs text-[color:var(--fg-mute)]">
-            Цифровая доставка. Ключ появится в кабинете только после серверного подтверждения оплаты.
+            Цифровая доставка. После оплаты получите ключ NX и напишите в Telegram.
           </p>
         </div>
       </div>

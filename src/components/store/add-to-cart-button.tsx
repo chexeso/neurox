@@ -23,6 +23,16 @@ export function AddToCartButton({
   async function run() {
     setPending(true);
     try {
+      const me = await fetch("/api/auth/me", { credentials: "same-origin" }).catch(() => null);
+      const session = me ? await me.json().catch(() => ({})) : {};
+      if (me && me.ok === false && me.status === 401) {
+        window.location.href = "/login?next=/cart";
+        return;
+      }
+      if (me?.ok && session && session.user === null) {
+        window.location.href = "/login?next=/cart";
+        return;
+      }
       const res = await fetch("/api/cart", {
         method: "POST",
         credentials: "same-origin",

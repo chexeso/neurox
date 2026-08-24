@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { site } from "@/lib/site";
 import { ReviewForm } from "@/components/store/review-form";
 import { CopyButton } from "@/components/store/copy-button";
+import { SuccessWow } from "@/components/store/success-wow";
 
 export const metadata = { title: "Оплата прошла" };
 
@@ -35,16 +36,10 @@ export default async function SuccessPage({ searchParams }: { searchParams: Prom
 
   return (
     <div className="container-nx max-w-2xl py-16">
-      <p className="text-xs uppercase tracking-[0.16em] text-[color:var(--accent)]">Оплата прошла</p>
-      <h1 className="mt-2 text-4xl font-semibold tracking-tight">Ключ заказа готов.</h1>
-      <p className="mt-3 text-[color:var(--fg-mute)]">
-        Сообщите этот ключ в поддержку Telegram — по нему найдём заказ в админке и выдадим товар.
+      <SuccessWow number={order.number} />
+      <p className="mt-6 text-[color:var(--fg-mute)]">
+        Сообщите этот ключ в поддержку Telegram — по нему найдём заказ и выдадим товар.
       </p>
-      <div className="card mt-8 p-6">
-        <p className="text-xs uppercase tracking-[0.14em] text-[color:var(--fg-mute)]">Ключ заказа</p>
-        <p className="mt-2 font-mono text-3xl font-semibold tracking-tight">{order.number}</p>
-        <CopyButton value={order.number} />
-      </div>
       <div className="card mt-4 p-6">
         <h2 className="text-xl font-semibold">Как получить товар</h2>
         <ol className="mt-3 list-decimal space-y-2 pl-5 text-sm text-[color:var(--fg-mute)]">

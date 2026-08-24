@@ -10,6 +10,7 @@ import {
   HomeCta,
 } from "@/components/store/home-i18n";
 import { HomeOrbitTitle, HomeCategoriesTitle, HomeFaqTitle } from "@/components/store/home-titles";
+import { WowCompare, WowSteps, WowChannel } from "@/components/store/wow-blocks";
 
 export const dynamic = "force-dynamic";
 
@@ -73,8 +74,11 @@ export default async function HomePage() {
         </div>
       </section>
 
+      <WowSteps />
+      <WowCompare />
       <HomeWhy />
       <HomeHow />
+      <WowChannel />
 
       <HomeReviewsHead>
         {internalReviews.length > 0 ? (
