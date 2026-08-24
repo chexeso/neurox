@@ -4,13 +4,21 @@ import { CosmicBg } from "@/components/store/cosmic-bg";
 import { getOrCreateCart } from "@/lib/cart";
 import { getCurrentUser } from "@/lib/session";
 
+export const dynamic = "force-dynamic";
+
 export default async function StoreLayout({ children }: { children: React.ReactNode }) {
-  const user = await getCurrentUser();
+  let user: Awaited<ReturnType<typeof getCurrentUser>> = null;
   let count = 0;
+  try {
+    user = await getCurrentUser();
+  } catch (e) {
+    console.error("layout user:", e);
+  }
   try {
     const cart = await getOrCreateCart();
     count = cart.items.reduce((s, i) => s + i.quantity, 0);
-  } catch {
+  } catch (e) {
+    console.error("layout cart:", e);
     count = 0;
   }
   return (
