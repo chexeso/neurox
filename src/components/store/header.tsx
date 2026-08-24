@@ -19,7 +19,7 @@ export function Header({ cartCount = 0, userName }: { cartCount?: number; userNa
     { href: "/#how", label: t.nav_how, ext: false },
     { href: "/#faq", label: t.nav_faq, ext: false },
     { href: "/support", label: t.nav_support, ext: false },
-    { href: "https://t.me/neuroxstore", label: "Канал", ext: true },
+    { href: "https://t.me/neuroxstore", label: "Telegram канал", ext: true },
   ];
 
   useEffect(() => {
@@ -38,7 +38,7 @@ export function Header({ cartCount = 0, userName }: { cartCount?: number; userNa
         <nav className="hidden items-center gap-4 text-sm text-[color:var(--fg-mute)] lg:flex">
           {nav.map((item) =>
             item.ext ? (
-              <a key={item.href} href={item.href} target="_blank" rel="noreferrer" className="hover:text-[color:var(--fg)]">
+              <a key={item.href} href={item.href} target="_blank" rel="noreferrer" className="tg-channel-link">
                 {item.label}
               </a>
             ) : (
@@ -69,7 +69,14 @@ export function Header({ cartCount = 0, userName }: { cartCount?: number; userNa
             <ThemeLangSwitch />
             {nav.map((item) =>
               item.ext ? (
-                <a key={item.href} href={item.href} target="_blank" rel="noreferrer" onClick={() => setOpen(false)}>
+                <a
+                  key={item.href}
+                  href={item.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="tg-channel-link inline-flex w-fit"
+                  onClick={() => setOpen(false)}
+                >
                   {item.label}
                 </a>
               ) : (

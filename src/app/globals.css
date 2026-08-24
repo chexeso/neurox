@@ -661,3 +661,20 @@ select.field option {
   background: #121218;
   color: #f5f5f7;
 }
+.tg-channel-link {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  font-weight: 600;
+  color: #7dd3fc !important;
+  background: rgba(56, 189, 248, 0.18);
+  border: 1px solid rgba(56, 189, 248, 0.45);
+  box-shadow: 0 0 18px rgba(56, 189, 248, 0.25);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.tg-channel-link:hover {
+  color: #e0f2fe !important;
+  box-shadow: 0 0 28px rgba(56, 189, 248, 0.45);
+}
