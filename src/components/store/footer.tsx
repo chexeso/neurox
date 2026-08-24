@@ -44,8 +44,9 @@ export function Footer() {
           </div>
           <p className="mt-6 text-xs uppercase tracking-[0.16em] text-[color:var(--fg-mute)]">{t.social}</p>
           <div className="mt-3 flex flex-col gap-2 text-sm">
-            <a href={site.social.telegramChannel} target="_blank" rel="noreferrer">
-              Telegram
+            <a href="https://t.me/neuroxstore" target="_blank" rel="noreferrer">
+  @neuroxstore
+</a>
             </a>
             <a href={site.social.playerokReviews} target="_blank" rel="noreferrer">
               {t.reviews_playerok}
