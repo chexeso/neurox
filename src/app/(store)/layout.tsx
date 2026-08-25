@@ -1,7 +1,6 @@
 import { Footer } from "@/components/store/footer";
 import { Header } from "@/components/store/header";
 import { CosmicBg } from "@/components/store/cosmic-bg";
-import { CosmicCursor } from "@/components/store/cosmic-cursor";
 import { getOrCreateCart } from "@/lib/cart";
 import { getCurrentUser } from "@/lib/session";
 
