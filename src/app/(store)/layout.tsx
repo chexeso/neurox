@@ -24,7 +24,6 @@ export default async function StoreLayout({ children }: { children: React.ReactN
   return (
     <div className="relative min-h-screen" style={{ isolation: "isolate" }}>
       <CosmicBg />
-      <CosmicCursor />
       <div className="relative" style={{ zIndex: 1 }}>
         <Header cartCount={count} userName={user?.name || user?.email} />
         <main className="min-h-[70vh]">{children}</main>
