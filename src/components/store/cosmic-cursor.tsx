@@ -18,9 +18,9 @@ export function CosmicCursor() {
       ty = e.clientY;
     };
     const loop = () => {
-      x += (tx - x) * 0.18;
-      y += (ty - y) * 0.18;
-      el.style.transform = `translate(${x - 14}px, ${y - 14}px)`;
+      x += (tx - x) * 0.14;
+      y += (ty - y) * 0.14;
+      el.style.transform = `translate(${x - 32}px, ${y - 32}px)`;
       requestAnimationFrame(loop);
     };
     window.addEventListener("pointermove", move);

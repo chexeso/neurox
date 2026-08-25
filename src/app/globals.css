@@ -752,3 +752,16 @@ select.field option {
   30% { opacity: 1; }
   to { opacity: 0; transform: scale(1.15); }
 }
+.tg-channel-link {
+  color: #f8fbff !important;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  box-shadow: 0 0 40px rgba(255, 255, 255, 0.16);
+  backdrop-filter: blur(16px);
+}
+.nx-cursor {
+  width: 64px;
+  height: 64px;
+  background: radial-gradient(circle, rgba(255,255,255,.45), transparent 70%);
+  filter: blur(6px);
+}
